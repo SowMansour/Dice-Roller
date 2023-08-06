@@ -5,14 +5,19 @@
 const randomDice = function() {
     return Math.floor(Math.random() * 6 + 1);
 }
-//Je crée une function contenant les instructions pour lancer un dé
-const throwDice = function(){
-// Création d'une div
+
+/**
+ * Function affichant un dé alétoire dans le html
+ * @param {string} id l'argument de l'appel de la function doit etre un string
+ */
+
+const throwDice = function(id){
+// Création de la div (Player)
 let nodeDice = document.createElement("div");
 
 nodeDice.classList.add("dice");
 
-let divPlayer = document.getElementById("player");
+let divPlayer = document.getElementById(id);
 // Rajout de la div crée dans la page
 divPlayer.appendChild(nodeDice);
 
@@ -25,11 +30,23 @@ nodeDice.style.backgroundPositionX = `-${rand-1}00px`;
 
 };
 
+// Creation du plateau dealer
+const divDealer = document.createElement("div");
+//Je lui ajoute une class et un id
+divDealer.classList.add("board");
+divDealer.id = "dealer";
+
+//Je récupère et stocke l'id app
+const divApp = document.getElementById("app");
+// J'ajoute la div dans sur le dom
+divApp.appendChild(divDealer);
+
 //Demander le nombre de dé ue l'utilisateur souhaite lancer
 const numberDice = Number(prompt("Combien de dé souhaites-tu que je lance"));
 
 //J'utilise une boucle pour éxecuter la function autant de fois que de dé demander
 for (let i = 0; i < numberDice; i++) {
-    throwDice();
+    throwDice("player");
+   // throwDice("dealer");
     
 }
