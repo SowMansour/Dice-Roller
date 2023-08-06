@@ -30,4 +30,42 @@ body {
   width: 100px;
   height: 100px;
   margin: 1em;
+  animation: spin 1s;
+}
+
+@keyframes spin {
+  100% {
+    transform:rotate(360deg);
+  }
+}
+
+#ui {
+  background-color: #ce6204ef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5em;
+  flex-direction: column;
+}
+
+#play-button {
+  background-color: #ffbe56;
+  padding: 5px 15px;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+}
+
+#play-button:hover {
+  background-color: #b57a1c;
+}
+
+.precision {
+  font-style: italic;
+  margin: 3px;
+  font-size: 0.7em;
+}
+
+.background-tint {
+  filter: hue-rotate(180deg);
 }

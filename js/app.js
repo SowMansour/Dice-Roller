@@ -16,37 +16,107 @@ const throwDice = function(id){
 let nodeDice = document.createElement("div");
 
 nodeDice.classList.add("dice");
+if(id === "dealer"){
+    nodeDice.classList.add("background-tint");
+}
 
 let divPlayer = document.getElementById(id);
 // Rajout de la div crée dans la page
 divPlayer.appendChild(nodeDice);
 
 // On stocke le nbre aléatoire 
-const rand = randomDice();
-//console.log(rand);
+const diceValue = randomDice();
+//console.log(diceValue);
 
 // On modifie la position du face background selon son numéro (-000px, -100px ...)
-nodeDice.style.backgroundPositionX = `-${rand-1}00px`;
+nodeDice.style.backgroundPositionX = `-${diceValue-1}00px`;
 
+// Je retourne la valeur du dé pour l'ajouter à la somme
+return diceValue;
 };
 
-// Creation du plateau dealer
-const divDealer = document.createElement("div");
-//Je lui ajoute une class et un id
-divDealer.classList.add("board");
-divDealer.id = "dealer";
-
-//Je récupère et stocke l'id app
-const divApp = document.getElementById("app");
-// J'ajoute la div dans sur le dom
-divApp.appendChild(divDealer);
-
-//Demander le nombre de dé ue l'utilisateur souhaite lancer
-const numberDice = Number(prompt("Combien de dé souhaites-tu que je lance"));
-
-//J'utilise une boucle pour éxecuter la function autant de fois que de dé demander
-for (let i = 0; i < numberDice; i++) {
-    throwDice("player");
-   // throwDice("dealer");
+// Définition de notre jeu
+const game = {
+    div: "app",
+    numberDice: 6,
+    boards: ["player", "dealer"],
+    active: true,
+    sumPlayer: 0,
+    sumDealer: 0,
+    launchGame(){
+        // Je récupère la div de l'application
+        const divApp = document.getElementById(game.div);
+        // Je supprme le contenu
+        divApp.textContent = "";
+        game.sumPlayer = 0;  // raz des sommes
+        game.sumDealer = 0; 
     
+        for(let i = 0; i < game.boards.length; i++){
+             // Creation du plateau dealer
+            const div = document.createElement("div");
+            //Je lui ajoute une class et un id
+            div.classList.add("board");
+            div.id = game.boards[i];
+            // J'ajoute la div dans sur le dom
+            divApp.appendChild(div);
+        }
+    },
+
+ /**
+     * Lance les dés
+     */
+ throwDices(){
+    if(game.active){ // Check si on peut relancer les dés
+        game.active = false; // Empêche de relancer les dés
+        // On supprime tout avant de relancer les dés
+        game.launchGame(); // <- immédiat
+        // Code asynchrone -> il sera executé quand l'utilisateur clique sur le bouton
+        for(let i = 0; i < game.numberDice; i++){
+            game.sumPlayer += throwDice("player");
+            // Décale l'exécution du lancé pour le dealer une seconde plus tard
+            
+            setTimeout(function(){
+                // On mets tout dans une fonction pour l'executer plus tard
+                game.sumDealer += throwDice("dealer");
+            }, 1000);  // <- décalé
+        }
+        setTimeout(function(){
+            game.active = true;
+            // Affichage sur la page
+            console.log(game.sumPlayer, game.sumDealer);
+
+        }, 2000);
+    }
 }
+};
+
+// Initialise le plateau de jeu
+game.launchGame();
+
+/* On n'exécuste qu'une seul fois la méthode addEventListener
+Car sinon on va multiplier les listener */
+const playButton = document.getElementById("play-button");
+playButton.addEventListener("click", game.throwDices);
+
+window.addEventListener("keydown", function(michel){
+// On récupère l'evenement
+// On test si c'est la touche espace qui a été appuyée
+if(michel.code === "Space"){
+    // Si oui, on exécute notre fonction
+    game.throwDices();
+}
+});
+
+const slider = document.getElementById("numberDices");
+// Affichage initial de la valeur
+const label = document.getElementById("labelNumberDices");
+label.textContent = slider.valueAsNumber;
+game.numberDice = slider.valueAsNumber;
+// Affichage lors de la modification
+slider.addEventListener("input", function(event){
+// event.target contient mon élément de type input
+const input = event.target;
+const label = document.getElementById("labelNumberDices");
+label.textContent = input.valueAsNumber;
+game.numberDice = input.valueAsNumber;
+});
