@@ -48,7 +48,7 @@ const game = {
         const divApp = document.getElementById(game.div);
         // Je supprme le contenu
         divApp.textContent = "";
-        game.sumPlayer = 0;  // raz des sommes
+        game.sumPlayer = 0;  // maj des sommes
         game.sumDealer = 0; 
     
         for(let i = 0; i < game.boards.length; i++){
@@ -70,6 +70,9 @@ const game = {
         game.active = false; // Empêche de relancer les dés
         // On supprime tout avant de relancer les dés
         game.launchGame(); // <- immédiat
+        game.sumPlayer = 0;
+        game.sumDealer = 0;
+
         // Code asynchrone -> il sera executé quand l'utilisateur clique sur le bouton
         for(let i = 0; i < game.numberDice; i++){
             game.sumPlayer += throwDice("player");
@@ -83,8 +86,8 @@ const game = {
         setTimeout(function(){
             game.active = true;
             // Affichage sur la page
-            console.log(game.sumPlayer, game.sumDealer);
-
+           document.getElementById('player-score').textContent = `Score du joueur : ${game.sumPlayer}`;
+           document.getElementById('dealer-score').textContent = `Score du dealer : ${game.sumDealer}`;
         }, 2000);
     }
 }
@@ -98,10 +101,10 @@ Car sinon on va multiplier les listener */
 const playButton = document.getElementById("play-button");
 playButton.addEventListener("click", game.throwDices);
 
-window.addEventListener("keydown", function(michel){
+window.addEventListener("keydown", function(event){
 // On récupère l'evenement
 // On test si c'est la touche espace qui a été appuyée
-if(michel.code === "Space"){
+if(event.code === "Space"){
     // Si oui, on exécute notre fonction
     game.throwDices();
 }
